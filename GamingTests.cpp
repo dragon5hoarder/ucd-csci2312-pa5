@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cassert>
 #include <regex>
+#include <string>
 
 #include "GamingTests.h"
 #include "ErrorContext.h"
@@ -99,7 +100,12 @@ void test_piece_print(ErrorContext &ec, unsigned int numRuns) {
                 std::string matchStr(m[0]);
                 std::regex r("[[:d:]]{1,}");
                 std::regex_search(matchStr, m, r);
-                id = stoi(m[0]);
+
+                std::stringstream convert(m[0]); // stringstream used for the conversion initialized with the contents of Text
+
+                if ( !(convert >> id) )//give the value to Result using the characters in the string
+                    id = 0;//if that fails set Result to 0
+                //id = std::stoi(m[0]);
                 pass = true;
             }
 
@@ -1077,9 +1083,9 @@ void test_game_print(ErrorContext &ec, unsigned int numRuns) {
                 std::regex re1("(\\[([[:alpha:]]{1}[[:d:]]{1,4}[ ]?|[ ]{5})\\]){3}");
                 std::regex_search(line, m, re1);
                 pass = pass && (m.size() == 3);
-//                if (! pass) {
-//                    std::cout << m[0] << ' ' << m[1] << ' ' << m.size() << std::endl;
-//                }
+                if (! pass) {
+                    std::cout << m[0] << ' ' << m[1] << ' ' << m.size() << std::endl;
+                }
             }
             getline(ss, line);
             std::regex re2("Status:");
